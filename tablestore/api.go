@@ -370,6 +370,16 @@ func (tableStoreClient *TableStoreClient) CreateTable(request *CreateTableReques
 	return response, nil
 }
 
+//ensure a table exists and schema is as expected.
+//when the table does not exist, create it with the request, the request is the same as CreateTableRequest.
+//when the table does exist, check the schema with the request, return an error when any difference between them.
+func (tableStoreClient *TableStoreClient) EnsureTable(request *EnsureTableRequest) (*EnsureTableResponse, error) {
+	describeTableResponse, err := tableStoreClient.DescribeTable(&DescribeTableRequest{TableName: request.TableMeta.TableName})
+	if err != nil {
+		return nil, err
+	}
+}
+
 func (tableStoreClient *TableStoreClient) CreateIndex(request *CreateIndexRequest) (*CreateIndexResponse, error) {
 	if len(request.MainTableName) > maxTableNameLength {
 		return nil, errTableNameTooLong(request.MainTableName)
